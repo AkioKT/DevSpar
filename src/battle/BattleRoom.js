@@ -8,9 +8,12 @@ import {
   FlatList,
   Image,
   Dimensions,
+  Alert,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { initSocket, getSocket } from "./socket";
 import ButtonClick from "../sounds/ButtonClick";
+
 export const character = {
   1: {
     image: require("../../assets/image/chibi-male-1.png"),
@@ -47,15 +50,18 @@ export const character = {
 };
 
 const { width } = Dimensions.get("window");
+
 export default function BattleRoom({ navigation, route }) {
   const { roomId, user } = route.params;
   const [room, setRoom] = useState(null);
   const socket = getSocket() || initSocket();
   const isHost = socket.id === room?.host;
+
   const startBattle = () => {
     socket.emit("start_battle", { roomId });
     ButtonClick();
   };
+
   const readyBattle = () => {
     socket.emit("player_ready", { roomId });
     ButtonClick();
@@ -77,7 +83,22 @@ export default function BattleRoom({ navigation, route }) {
       navigation.navigate("BattleLobby");
       ButtonClick();
     }
-    
+  };
+
+  const canStart = () => {
+    if (!room) return false;
+
+    const players = room.players || [];
+
+    // butuh minimal 2 pemain
+    if (players.length < 2) return false;
+
+    // semua pemain harus ready
+    const allReady = players.every((p) => p.ready === true);
+    if (!allReady) return false;
+
+    // hanya host
+    return user.id === room.host;
   };
 
   useEffect(() => {
@@ -94,12 +115,13 @@ export default function BattleRoom({ navigation, route }) {
     socket.on("battle_starting", ({ startTime }) => {
       navigation.navigate("BattleScreen", { roomId, user, startTime });
     });
+
     // 🔥 penting: semua player keluar jika host menutup room
     socket.on("room_closed", () => {
       navigation.goBack();
     });
-    // request update
 
+    // request update
     socket.emit("join_room", { roomId, user });
     socket.emit("get_room");
     if (socket.id === room?.host) {
@@ -114,149 +136,488 @@ export default function BattleRoom({ navigation, route }) {
   }, []);
 
   return (
-    <View style={s.container}>
-      <Text style={[s.title, { fontSize: 30 }]}>Coding Battle</Text>
-      <Text style={s.title}>Room: {roomId}</Text>
+    <View style={styles.container}>
+      {/* Animated floating pixel decorations */}
+      <View style={styles.floatingDecorations}>
+        <Text style={[styles.floatingIcon, { top: "10%", left: "15%" }]}>
+          ★
+        </Text>
+        <Text
+          style={[
+            styles.floatingIcon,
+            { top: "15%", right: "20%", fontSize: 14 },
+          ]}
+        >
+          {"</>"}
+        </Text>
+        <Text
+          style={[
+            styles.floatingIcon,
+            { top: "70%", left: "10%", fontSize: 16 },
+          ]}
+        >
+          {"{ }"}
+        </Text>
+        <Text style={[styles.floatingIcon, { top: "75%", right: "15%" }]}>
+          ★
+        </Text>
+        <Text
+          style={[
+            styles.floatingIcon,
+            { top: "40%", left: "5%", fontSize: 12 },
+          ]}
+        >
+          ✦
+        </Text>
+        <Text
+          style={[
+            styles.floatingIcon,
+            { top: "50%", right: "8%", fontSize: 12 },
+          ]}
+        >
+          ✦
+        </Text>
+      </View>
 
-      <FlatList
-        data={room?.players ?? []}
-        keyExtractor={(p) => p.id || p.socketId}
-        horizontal
-        contentContainerStyle={{
-          width: "100%",
-          justifyContent: "center",
-          // backgroundColor: "red"
-          // alignItems: "center",
-        }}
-        renderItem={({ item }) => (
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{ color: "#fff", fontFamily: "Pixel-Bold", fontSize: 20 }}
+      <View style={styles.contentWrapper}>
+        {/* Title Section */}
+        <View style={styles.titleContainer}>
+          <View style={styles.titleWrapper}>
+            <Text style={styles.mainTitleWhite}>CODING</Text>
+            <LinearGradient
+              colors={["#ffd700", "#ffed4e", "#ffd700"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.titleGradient}
             >
-              {item.name}
-            </Text>
-            <Text
-              style={{
-                color: item.ready ? "#4caf50" : "#de1111",
-                fontSize: 16,
-                marginTop: 4,
-                fontFamily: "Pixel-Bold",
-              }}
-            >
-              {character[item.avatar]?.name} -{" "}
-              {item.ready ? "Ready" : "Not Ready"}
-            </Text>
-
-            <Image
-              source={character[item.avatar].image}
-              style={{ width: 180, height: 180 }}
-              resizeMode="contain"
-            />
-
-            <Text
-              style={{ color: "#fff", fontFamily: "Pixel-Bold", fontSize: 20 }}
-            >
-              (score: {item.score || 0})
-            </Text>
+              <Text style={styles.mainTitleGold}>BATTLE</Text>
+            </LinearGradient>
           </View>
-        )}
-      />
 
-      <View style={s.btnWrap}>
-        {isHost && user.ready ? (
-          <TouchableOpacity style={s.btn} onPress={startBattle}>
-            <Text style={s.btntxt}>Start Battle</Text>
-          </TouchableOpacity>
-        ) : (
+          <View style={styles.roomCodeContainer}>
+            <View style={styles.pixelBorder}>
+              <Text style={styles.roomCodeLabel}>ROOM</Text>
+              <Text style={styles.roomCode}>{roomId}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Players Section */}
+        <View style={styles.playersSection}>
+          <FlatList
+            data={room?.players ?? []}
+            keyExtractor={(p) => p.id || p.socketId}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.playersList}
+            renderItem={({ item }) => (
+              <View style={styles.playerCard}>
+                {/* Character frame with glow */}
+                <View style={styles.characterFrame}>
+                  {/* Pixel glow effect */}
+                  <View
+                    style={[
+                      styles.pixelGlow,
+                      {
+                        backgroundColor: item.ready ? "#4caf5044" : "#ff660044",
+                      },
+                    ]}
+                  />
+
+                  {/* Character info */}
+                  <View style={styles.playerInfoTop}>
+                    <Text style={styles.playerName}>{item.name}</Text>
+                    <View
+                      style={[
+                        styles.statusBadge,
+                        {
+                          backgroundColor: item.ready ? "#4caf50" : "#de1111",
+                        },
+                      ]}
+                    >
+                      <Text style={styles.statusText}>
+                        {character[item.avatar]?.name.toUpperCase()} -{" "}
+                        {item.ready ? "READY" : "NOT READY"}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Character sprite */}
+                  <View style={styles.spriteContainer}>
+                    <View style={styles.spriteFrame}>
+                      <Image
+                        source={character[item.avatar].image}
+                        style={styles.characterSprite}
+                        resizeMode="contain"
+                      />
+                    </View>
+                  </View>
+
+                  {/* Score */}
+                  <View style={styles.scoreContainer}>
+                    <Text style={styles.scoreLabel}>(SCORE: </Text>
+                    <Text style={styles.scoreValue}>{item.score || 0}</Text>
+                    <Text style={styles.scoreLabel}>)</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+          />
+        </View>
+
+        {/* Pixel divider */}
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerIcon}>⚔</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonContainer}>
+          {isHost && user.ready ? (
+            <TouchableOpacity
+              style={styles.primaryButton}
+              disabled={!canStart()}
+              onPress={() => {
+                if (!canStart()) {
+                  if (room?.players?.length < 2) {
+                    Alert.alert("Tidak bisa mulai", "Pemain kurang dari 2!");
+                  } else {
+                    Alert.alert(
+                      "Tidak bisa mulai",
+                      "Semua pemain harus ready!"
+                    );
+                  }
+                  return;
+                }
+                startBattle();
+              }}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={
+                  canStart() ? ["#ffd700", "#ffed4e"] : ["#666666", "#888888"]
+                }
+                style={styles.buttonGradient}
+              >
+                <View style={styles.buttonInner}>
+                  <Text style={styles.primaryButtonText}>
+                    ⚡ START BATTLE ⚡
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.primaryButton}
+              disabled={user.ready}
+              onPress={readyBattle}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={
+                  user.ready ? ["#666666", "#888888"] : ["#4caf50", "#66bb6a"]
+                }
+                style={styles.buttonGradient}
+              >
+                <View style={styles.buttonInner}>
+                  <Text style={styles.primaryButtonText}>
+                    {user.ready ? "✓ READY" : "→ GET READY"}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
-            style={[
-              s.btn,
-              { backgroundColor: user.ready ? "#ffffff6f" : "#4caf50" },
-            ]}
-            disabled={user.ready}
-            onPress={readyBattle}
+            style={styles.secondaryButton}
+            onPress={backPage}
+            activeOpacity={0.8}
           >
-            <Text style={s.btntxt}>Ready</Text>
+            <View style={styles.secondaryButtonInner}>
+              <Text style={styles.secondaryButtonText}>← BACK</Text>
+            </View>
           </TouchableOpacity>
-        )}
-
-        <TouchableOpacity style={s.btnBack} onPress={backPage}>
-          <Text style={s.btntxt}>Back</Text>
-        </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
 
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A", // blue-gray dark
-    padding: 20,
+    backgroundColor: "#0a0e27",
+    position: "relative",
   },
-
-  title: {
-    fontSize: 26,
-    fontFamily: "Pixel-Bold",
-    color: "#fff",
-    textAlign: "center",
-    // marginBottom: 20,
-  },
-
-  playersLabel: {
-    color: "#CBD5E1",
-    fontSize: 16,
-    marginBottom: 10,
-  },
-
-  playerCard: {
-    backgroundColor: "rgba(255,255,255,0.08)",
-    padding: 14,
-    borderRadius: 14,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.05)",
-  },
-
-  playerText: {
-    color: "#F1F5F9",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-
-  btnWrap: {
+  floatingDecorations: {
+    position: "absolute",
     width: "100%",
-    flexDirection: "row",
-    gap: 10,
+    height: "100%",
+    zIndex: 0,
   },
-  btn: {
-    flex: 1,
-    backgroundColor: "#ffd54f",
-    padding: 10,
-    borderRadius: 6,
-    elevation: 3,
-    shadowColor: "#3B82F6",
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-
-  btnBack: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: "#f1ececff",
-    borderRadius: 6,
-    elevation: 3,
-    shadowColor: "#3B82F6",
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-
-  btntxt: {
-    color: "#000",
-    textAlign: "center",
+  floatingIcon: {
+    position: "absolute",
+    color: "#ffd70033",
     fontSize: 18,
     fontFamily: "Pixel-Bold",
+    textShadowColor: "#ffd70066",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  contentWrapper: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    gap: 24,
+    zIndex: 1,
+    justifyContent: "center",
+  },
+  titleContainer: {
+    alignItems: "center",
+    gap: 12,
+  },
+  titleWrapper: {
+    alignItems: "center",
+    gap: 4,
+  },
+  mainTitleWhite: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 48,
+    color: "#ffffff",
+    textAlign: "center",
+    letterSpacing: 2,
+    textShadowColor: "#000000",
+    textShadowOffset: { width: 3, height: 3 },
+    textShadowRadius: 0,
+  },
+  titleGradient: {
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  mainTitleGold: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 48,
+    color: "#0a0e27",
+    textAlign: "center",
+    letterSpacing: 2,
+    textShadowColor: "#00000044",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 0,
+  },
+  roomCodeContainer: {
+    alignItems: "center",
+  },
+  pixelBorder: {
+    backgroundColor: "#1a1f3a",
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 2,
+    shadowColor: "#3d5a80",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  roomCodeLabel: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 14,
+    color: "#98c1d9",
+  },
+  roomCode: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 20,
+    color: "#fff",
+    letterSpacing: 2,
+  },
+  playersSection: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  playersList: {
+    paddingHorizontal: 10,
+    gap: 16,
+  },
+  playerCard: {
+    alignItems: "center",
+    marginHorizontal: 8,
+  },
+  characterFrame: {
+    backgroundColor: "#1a1f3a",
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
+    padding: 16,
+    alignItems: "center",
+    position: "relative",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 8,
+    // minWidth: 240,
+  },
+  pixelGlow: {
+    position: "absolute",
+    width: "90%",
+    height: "90%",
+    borderRadius: 4,
+    opacity: 0.3,
+    shadowRadius: 20,
+    shadowOpacity: 1,
+    elevation: 0,
+  },
+  playerInfoTop: {
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 8,
+    zIndex: 1,
+  },
+  playerName: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 20,
+    color: "#fff",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 0,
+  },
+  statusBadge: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 2,
+    borderWidth: 2,
+    borderColor: "#000",
+  },
+  statusText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 11,
+    color: "#fff",
+    letterSpacing: 1,
+  },
+  spriteContainer: {
+    width: 180,
+    height: 180,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 8,
+    zIndex: 1,
+  },
+  spriteFrame: {
+    borderWidth: 3,
+    borderColor: "#d4af37",
+    borderRadius: 4,
+    padding: 4,
+    backgroundColor: "#0a0e2755",
+  },
+  characterSprite: {
+    width: 160,
+    height: 160,
+  },
+  scoreContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#0a0e27",
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 2,
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    zIndex: 1,
+  },
+  scoreLabel: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 14,
+    color: "#98c1d9",
+  },
+  scoreValue: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 18,
+    color: "#ffd700",
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+    marginVertical: 8,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 3,
+    backgroundColor: "#3d5a80",
+  },
+  dividerIcon: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 20,
+    color: "#ffd700",
+  },
+  buttonContainer: {
+    gap: 12,
+    paddingHorizontal: 10,
+  },
+  primaryButton: {
+    borderRadius: 2,
+    shadowColor: "#ffd700",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  buttonGradient: {
+    borderRadius: 2,
+    borderWidth: 3,
+    borderColor: "#000",
+  },
+  buttonInner: {
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 0,
+    borderWidth: 2,
+    borderColor: "#ffffff44",
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+  },
+  primaryButtonText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 20,
+    color: "#0a0e27",
+    textAlign: "center",
+    letterSpacing: 2,
+    textShadowColor: "#ffffff66",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0,
+  },
+  secondaryButton: {
+    backgroundColor: "#3d5a80",
+    borderRadius: 2,
+    borderWidth: 3,
+    borderColor: "#98c1d9",
+    shadowColor: "#3d5a80",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  secondaryButtonInner: {
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 0,
+    borderWidth: 2,
+    borderColor: "#ffffff22",
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+  },
+  secondaryButtonText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 18,
+    color: "#fff",
+    textAlign: "center",
+    letterSpacing: 2,
   },
 });

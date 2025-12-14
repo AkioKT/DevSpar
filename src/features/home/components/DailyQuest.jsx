@@ -58,60 +58,49 @@ export default function DailyQuest({ onRewardHeart }) {
 
   return (
     <View style={styles.card}>
-      <Image source={DailyQuestIcon} style={{ flex: 1, width: "100%" }}></Image>
-      <View
-        style={{
-          position: "absolute",
-          zIndex: 1,
-          width: "100%",
-          height: 300,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            width: "55%",
-            height: 300,
-            justifyContent: "center",
-            paddingHorizontal: 6,
-            // alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              borderBottomColor: "#171717",
-              borderBottomWidth: 1,
-              borderStyle: "dashed",
-            }}
-          >
-            <Text style={styles.sectionTitle}>Daily Quest</Text>
-          </View>
-          {dailyQuests.map((q) => (
-            <TouchableOpacity
-              key={q.id}
-              style={[styles.questRow, q.done]}
-              disabled={q.done}
-              onPress={() => completeDailyQuest(q.id)}
-            >
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={[
-                    styles.questTitle,
-                    q.done && {
-                      textDecorationLine: "line-through",
-                      color: "#8b949e",
-                    },
-                  ]}
-                >
-                  {q.title}
-                </Text>
-                <Text style={styles.questReward}>{q.reward}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
+      <View style={{ gap: 6 }}>
+        <Text style={[styles.sectionTitle, { fontSize: 16, color: "#f4c713" }]}>
+          Your Daily Quest, Adventure!
+        </Text>
+        <Text style={styles.sectionTitle}>Daily Quest</Text>
+        <Text style={[styles.sectionTitle, { fontSize: 16 }]}>
+          New quest available every day. Complete all for a bonus chest!
+        </Text>
       </View>
+      {dailyQuests.map((q) => (
+        <TouchableOpacity
+          key={q.id}
+          style={[
+            styles.questRow,
+            { flexDirection: "row", alignItems: "center", gap: 12 },
+          ]}
+          disabled={q.done}
+          onPress={() => completeDailyQuest(q.id)}
+        >
+          {/* ✅ Checklist Icon */}
+          <Feather
+            name={q.done ? "check-circle" : "circle"}
+            size={22}
+            color={q.done ? "#22c55e" : "#6b7280"}
+          />
+
+          {/* 📄 Text Content */}
+          <View style={{ flex: 1 }}>
+            <Text
+              style={[
+                styles.questTitle,
+                q.done && {
+                  textDecorationLine: "line-through",
+                  color: "#8b949e",
+                },
+              ]}
+            >
+              {q.title}
+            </Text>
+            <Text style={styles.questReward}>{q.reward}</Text>
+          </View>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }

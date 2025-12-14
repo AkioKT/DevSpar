@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
-import styles from "../style/LoginStyle";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import loginStyles from "../style/LoginStyle";
+import { LinearGradient } from "expo-linear-gradient";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import listAccounts from "../../assets/data/accounts/acc.json";
-import Toast from "react-native-toast-message";
 
 export default function Login({ navigation }) {
   const [loginUsername, setLoginUsername] = useState("");
@@ -12,35 +17,34 @@ export default function Login({ navigation }) {
   const [isValid, setIsValid] = useState(false);
 
   const handleLogin = () => {
-    // Cek apakah ada akun dengan email & password yang cocok
     const foundUser = listAccounts.find(
       (user) =>
         user.username === loginUsername && user.password === loginPassword
     );
-
     if (foundUser) {
-      setIsValid(false); // reset error
+      setIsValid(false);
       navigation.navigate("MainTabs", {
         screen: "Home",
       });
-
       console.log("User:", foundUser);
     } else {
-      setIsValid(true); // tampilkan error
+      setIsValid(true);
     }
   };
 
   return (
-    <View style={styles.formCard}>
+    <View style={loginStyles.formCard}>
       {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
-        <View style={styles.inputWrapper}>
-          <MaterialIcons name="email" size={22} style={styles.inputIcon} />
+      <View style={loginStyles.inputContainer}>
+        <Text style={loginStyles.label}>Email</Text>
+        <View style={loginStyles.inputWrapper}>
+          <View style={loginStyles.iconContainer}>
+            <MaterialIcons name="email" size={20} color="#6b7280" />
+          </View>
           <TextInput
-            style={styles.input}
+            style={loginStyles.input}
             placeholder="Example@gmail.com"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6b7280"
             value={loginUsername}
             onChangeText={setLoginUsername}
             keyboardType="email-address"
@@ -51,14 +55,16 @@ export default function Login({ navigation }) {
       </View>
 
       {/* Password Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
-        <View style={styles.inputWrapper}>
-          <Ionicons name="lock-closed" size={22} style={styles.inputIcon} />
+      <View style={loginStyles.inputContainer}>
+        <Text style={loginStyles.label}>Password</Text>
+        <View style={loginStyles.inputWrapper}>
+          <View style={loginStyles.iconContainer}>
+            <Ionicons name="lock-closed" size={20} color="#6b7280" />
+          </View>
           <TextInput
-            style={styles.input}
+            style={loginStyles.input}
             placeholder="Password"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6b7280"
             value={loginPassword}
             onChangeText={setLoginPassword}
             secureTextEntry={!showLoginPassword}
@@ -67,35 +73,42 @@ export default function Login({ navigation }) {
           />
           <TouchableOpacity
             onPress={() => setShowLoginPassword(!showLoginPassword)}
-            style={styles.eyeButton}
+            style={loginStyles.eyeButton}
+            activeOpacity={0.7}
           >
-            <Text style={styles.eyeIcon}>
-              {showLoginPassword ? (
-                <Ionicons name="eye" size={24} style={styles.inputIcon} />
-              ) : (
-                <Ionicons name="eye-off" size={24} style={styles.inputIcon} />
-              )}
-            </Text>
+            <Ionicons
+              name={showLoginPassword ? "eye-off" : "eye-off-outline"}
+              size={20}
+              color="#6b7280"
+            />
           </TouchableOpacity>
         </View>
+
+        {/* Error Message */}
         {isValid && (
-          <View>
-            <Text style={{ color: "#ff3030ff" }}>
+          <View style={loginStyles.errorContainer}>
+            <Ionicons name="alert-circle" size={16} color="#ff3b3b" />
+            <Text style={loginStyles.errorText}>
               Email atau Password salah!
             </Text>
           </View>
         )}
       </View>
 
-      {/* Login Button */}
+      {/* Sign In Button */}
       <TouchableOpacity
         onPress={handleLogin}
         activeOpacity={0.8}
-        style={styles.buttonWrapper}
+        style={loginStyles.signInButton}
       >
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </View>
+        <LinearGradient
+          colors={["#ffd700", "#ffed4e"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={loginStyles.signInGradient}
+        >
+          <Text style={loginStyles.signInText}>Sign In</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );

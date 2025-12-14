@@ -11,15 +11,16 @@ import {
   StyleSheet,
   Dimensions,
   Easing,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { initSocket, getSocket } from "./socket";
 import { Ionicons } from "@expo/vector-icons";
 import useCustomFonts from "../../src/hooks/useCustomFonts";
 import SelectCharacter from "../sounds/SelectCharacter";
 import ButtonClick from "../sounds/ButtonClick";
+
 const { width } = Dimensions.get("window");
+
 const character = {
   1: require("../../assets/image/chibi-male-1.png"),
   2: require("../../assets/image/chibi-male-2.png"),
@@ -38,6 +39,7 @@ export default function BattleLobby({ navigation, route }) {
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const joinAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0.8)).current;
+  const floatAnim = useRef(new Animated.Value(0)).current;
 
   const fontsLoaded = useCustomFonts();
   if (!fontsLoaded) return null;
@@ -48,7 +50,7 @@ export default function BattleLobby({ navigation, route }) {
     });
     ButtonClick();
   };
-  const floatAnim = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -65,17 +67,18 @@ export default function BattleLobby({ navigation, route }) {
       ])
     ).start();
   }, []);
+
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(floatAnim, {
-          toValue: -15, // naik 10px
+          toValue: -15,
           duration: 1000,
           easing: Easing.inOut(Easing.sin),
           useNativeDriver: true,
         }),
         Animated.timing(floatAnim, {
-          toValue: 0, // turun kembali
+          toValue: 0,
           duration: 1000,
           easing: Easing.inOut(Easing.sin),
           useNativeDriver: true,
@@ -83,6 +86,7 @@ export default function BattleLobby({ navigation, route }) {
       ])
     ).start();
   }, []);
+
   const animateJoin = () => {
     Animated.sequence([
       Animated.timing(joinAnim, {
@@ -99,11 +103,10 @@ export default function BattleLobby({ navigation, route }) {
   };
 
   const chooseAvatar = (key) => {
-    setSelectedAvatar(key); // key = 1,2,3,4
+    setSelectedAvatar(key);
     SelectCharacter();
   };
 
-  // BattleLobby.js
   const createRoom = () => {
     if (!name.trim()) return Alert.alert("Nama wajib diisi!");
     if (!selectedAvatar) return Alert.alert("Pilih avatar dulu!");
@@ -123,31 +126,29 @@ export default function BattleLobby({ navigation, route }) {
 
     console.log("Emit create_room:", id, selectedAvatar);
     ButtonClick();
-    // Jangan navigasi di sini
   };
 
-  // Socket listener
   useEffect(() => {
     const socket = initSocket();
 
     socket.on("room_created", ({ roomId, user }) => {
       console.log("Room created:", roomId, user);
-      // navigasi hanya setelah server konfirmasi
       navigation.navigate("BattleRoom", { roomId, user });
     });
 
     socket.on("room_update", (summary) => {
       const socket = getSocket();
       const currentUser = summary.players.find((p) => p.id === socket.id);
-      if (!currentUser) return; // aman jika belum ada
+      if (!currentUser) return;
       navigation.navigate("BattleRoom", {
         roomId: summary.roomId,
         user: currentUser,
       });
     });
+
     socket.on("error_msg", (msg) => {
       Alert.alert("Error", msg);
-      setJoined(false); // reset UI
+      setJoined(false);
     });
 
     return () => {
@@ -169,7 +170,6 @@ export default function BattleLobby({ navigation, route }) {
       socket = initSocket();
     }
 
-    // Kirim join_room ke server dengan avatar
     socket.emit("join_room", {
       roomId,
       user: {
@@ -184,278 +184,478 @@ export default function BattleLobby({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0a0e27", padding: 16 }}>
-      {/* Header */}
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}
-      >
-        <TouchableOpacity onPress={backPage}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
-        </TouchableOpacity>
+    <View style={styles.container}>
+      {/* Floating decorations */}
+      <View style={styles.floatingDecorations}>
+        <Text style={[styles.floatingIcon, { top: "5%", left: "10%" }]}>★</Text>
+        <Text style={[styles.floatingIcon, { top: "8%", right: "15%" }]}>
+          ✦
+        </Text>
         <Text
-          style={{
-            color: "#fff",
-            fontSize: 24,
-            marginLeft: 16,
-            fontFamily: "Pixel-Bold",
-          }}
+          style={[
+            styles.floatingIcon,
+            { top: "85%", left: "8%", fontSize: 14 },
+          ]}
         >
-          Battle Lobby
+          {"</>"}
+        </Text>
+        <Text style={[styles.floatingIcon, { top: "88%", right: "12%" }]}>
+          ★
+        </Text>
+        <Text
+          style={[
+            styles.floatingIcon,
+            { top: "45%", left: "5%", fontSize: 12 },
+          ]}
+        >
+          {"{ }"}
+        </Text>
+        <Text
+          style={[
+            styles.floatingIcon,
+            { top: "50%", right: "5%", fontSize: 12 },
+          ]}
+        >
+          {"</>"}
         </Text>
       </View>
 
-      {/* Avatar Preview */}
-      <ScrollView showsHorizontalScrollIndicator={false}>
-        <View
-          style={{
-            alignItems: "center",
-            marginBottom: 20,
-            position: "relative",
-          }}
-        >
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="Your name"
-            placeholderTextColor="#9CA3AF"
-            style={{
-              width: "100%",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              fontFamily: "Pixel-Bold",
-              padding: 16,
-              borderRadius: 6,
-              color: "#fff",
-              marginBottom: 16,
-            }}
-          />
-          <TextInput
-            value={roomId}
-            onChangeText={setRoomId}
-            placeholder="Room ID (leave blank to create)"
-            placeholderTextColor="#9CA3AF"
-            keyboardType="numeric"
-            style={{
-              width: "100%",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              padding: 16,
-              fontFamily: "Pixel-Bold",
-              borderRadius: 6,
-              color: "#fff",
-              marginBottom: 16,
-            }}
-          />
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={backPage} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleBattle}>Battle </Text>
+          <LinearGradient
+            colors={["#ffd700", "#ffed4e"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.titleGradient}
+          >
+            <Text style={styles.titleLobby}>Lobby</Text>
+          </LinearGradient>
+        </View>
+      </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Input Section */}
+        <View style={styles.inputSection}>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Your name"
+              placeholderTextColor="#6b7280"
+              style={styles.input}
+            />
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <TextInput
+              value={roomId}
+              onChangeText={setRoomId}
+              placeholder="Room ID (leave blank to create)"
+              placeholderTextColor="#6b7280"
+              keyboardType="numeric"
+              style={styles.input}
+            />
+          </View>
+        </View>
+
+        {/* Divider */}
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerIcon}>◆</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* Avatar Preview */}
+        <View style={styles.avatarPreviewSection}>
+          <Text style={styles.sectionTitle}>Pilih Avatar Anda</Text>
+
           {selectedAvatar ? (
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              {/* Glow */}
+            <View style={styles.selectedAvatarContainer}>
+              {/* Glow effect */}
               <Animated.View
-                style={{
-                  position: "absolute",
-                  width: 150,
-                  height: 150,
-                  borderRadius: 140,
-                  backgroundColor: "#ffffff", // warna glow
-                  opacity: glowAnim,
-                  filter: "blur(40px)", // expo web akan bekerja, native ignore (diganti shadow native)
-                  shadowColor: "#f6be07ff",
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: 0.9,
-                  shadowRadius: 40,
-                  elevation: 30, // Android glow
-                  transform: [{ translateY: floatAnim }],
-                }}
+                style={[
+                  styles.avatarGlow,
+                  {
+                    opacity: glowAnim,
+                    transform: [{ translateY: floatAnim }],
+                  },
+                ]}
               />
 
-              {/* Avatar */}
+              {/* Avatar image */}
               <Animated.Image
                 source={character[selectedAvatar]}
-                style={{
-                  width: 250,
-                  height: 250,
-                  borderRadius: 10,
-                  transform: [{ scale: joinAnim }, { translateY: floatAnim }],
-                }}
+                style={[
+                  styles.selectedAvatar,
+                  {
+                    transform: [{ scale: joinAnim }, { translateY: floatAnim }],
+                  },
+                ]}
+                resizeMode="contain"
               />
             </View>
           ) : (
-            <View
-              style={{
-                width: 250,
-                height: 250,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontFamily: "Pixel-Bold",
-                  fontSize: 26,
-                }}
-              >
-                Pilih Avatar Anda
-              </Text>
+            <View style={styles.placeholderContainer}>
+              <Text style={styles.placeholderText}>?</Text>
             </View>
           )}
         </View>
 
-        {/* Avatar Selection */}
-        <View style={{ gap: 10 }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 4 }}
-          >
-            {Object.keys(character).map((key) => (
-              <TouchableOpacity
-                key={key}
-                onPress={() => chooseAvatar(Number(key))} // jarak antar avatar
-              >
-                <Image
-                  source={character[key]}
-                  style={{
-                    width: 40,
-                    height: 200,
-                    borderRadius: 4,
-                    // backgroundColor: "green",
-                    opacity: selectedAvatar === Number(key) ? 1 : 0.5,
-                    borderWidth: selectedAvatar === Number(key) ? 2 : 0,
-                    borderColor: "#ffd54f",
-                  }}
-                />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          {/* Buttons */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <TouchableOpacity
-              onPress={createRoom}
-              style={{
-                flex: 1,
-                backgroundColor: "#ffd54f",
-                padding: 14,
-                borderRadius: 6,
-                marginRight: 8,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#171717",
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontFamily: "Pixel-Bold",
-                }}
-              >
-                Create Room
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={joinRoom}
-              style={{
-                flex: 1,
-                backgroundColor: "#171717",
-                borderWidth: 1,
-                borderColor: "#ffd54f",
-                padding: 14,
-                borderRadius: 6,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#ffd54f",
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontFamily: "Pixel-Bold",
-                }}
-              >
-                Join Room
-              </Text>
-            </TouchableOpacity>
+        {/* Avatar Grid Selection */}
+        <View style={styles.avatarGridSection}>
+          <View style={styles.avatarGrid}>
+            {Object.keys(character).map((key, index) => {
+              const isSelected = selectedAvatar === Number(key);
+              return (
+                <TouchableOpacity
+                  key={key}
+                  onPress={() => chooseAvatar(Number(key))}
+                  style={[
+                    styles.avatarCard,
+                    isSelected && styles.avatarCardSelected,
+                  ]}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.avatarCardInner}>
+                    <Image
+                      source={character[key]}
+                      style={[
+                        styles.avatarImage,
+                        !isSelected && styles.avatarImageUnselected,
+                      ]}
+                      resizeMode="contain"
+                    />
+                  </View>
+                  {isSelected && (
+                    <View style={styles.selectedBadge}>
+                      <Text style={styles.selectedBadgeText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </View>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonSection}>
+          <TouchableOpacity
+            onPress={createRoom}
+            style={styles.primaryButton}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={["#ffd700", "#ffed4e"]}
+              style={styles.buttonGradient}
+            >
+              <View style={styles.buttonInner}>
+                <Text style={styles.primaryButtonText}>Create Room</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={joinRoom}
+            style={styles.secondaryButton}
+            activeOpacity={0.8}
+          >
+            <View style={styles.secondaryButtonInner}>
+              <Text style={styles.secondaryButtonText}>Join Room</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
   );
 }
 
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0a0e27",
-    padding: 20,
-    alignItems: "center",
+    position: "relative",
+  },
+  floatingDecorations: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    zIndex: 0,
+  },
+  floatingIcon: {
+    position: "absolute",
+    color: "#ffd70033",
+    fontSize: 18,
+    fontFamily: "Pixel-Bold",
+    textShadowColor: "#ffd70066",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   header: {
-    width: "100%",
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
-    gap: 10,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 20,
+    zIndex: 1,
   },
-  title: {
-    fontSize: 28,
-    color: "white",
-    marginVertical: 20,
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 2,
+    backgroundColor: "#1a1f3a",
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  titleBattle: {
     fontFamily: "Pixel-Bold",
-  },
-  vsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  avatar: {
-    width: 250,
-    height: 250,
-    marginHorizontal: 20,
-  },
-  vsText: {
-    fontSize: 30,
+    fontSize: 28,
     color: "#fff",
-    fontWeight: "700",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 0,
+  },
+  titleGradient: {
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 2,
+  },
+  titleLobby: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 28,
+    color: "#0a0e27",
+    textShadowColor: "#00000044",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    zIndex: 1,
+  },
+  inputSection: {
+    gap: 12,
+    marginTop: 10,
+  },
+  inputWrapper: {
+    backgroundColor: "#1a1f3a",
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 2,
+    overflow: "hidden",
   },
   input: {
-    width: "90%",
-    backgroundColor: "#162044",
-    color: "white",
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 14,
     fontFamily: "Pixel-Bold",
     fontSize: 16,
-  },
-  btnWrapper: {
-    width: "90%",
-    flexDirection: "row",
-    gap: 6,
-  },
-  btn: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: "#ffd54f",
-    borderRadius: 6,
-  },
-  btnSecondary: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: "#4d4d4d",
-    borderRadius: 6,
-  },
-  btntxt: {
-    color: "white",
-    fontSize: 18,
-    textAlign: "center",
-    fontFamily: "Pixel-Bold",
-    color: "#000",
-  },
-  btntxtSecondary: {
-    color: "white",
-    fontSize: 18,
-    textAlign: "center",
-    fontFamily: "Pixel-Bold",
     color: "#fff",
+    padding: 14,
+    paddingHorizontal: 16,
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 2,
+    backgroundColor: "#3d5a80",
+  },
+  dividerIcon: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 16,
+    color: "#98c1d9",
+  },
+  avatarPreviewSection: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 18,
+    color: "#98c1d9",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  selectedAvatarContainer: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  avatarGlow: {
+    position: "absolute",
+    bottom: 0,
+    width: 180,
+    height: 40,
+    borderRadius: 90,
+    backgroundColor: "#f7f2f2ff",
+    shadowColor: "#e2ed05ff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 40,
+    elevation: 30,
+  },
+  selectedAvatar: {
+    width: 200,
+    height: 200,
+  },
+  placeholderContainer: {
+    width: 200,
+    height: 200,
+    backgroundColor: "#1a1f3a",
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 80,
+    color: "#3d5a80",
+  },
+  avatarGridSection: {
+    marginBottom: 24,
+  },
+  avatarGrid: {
+    backgroundColor: "#1a1f3a",
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
+    padding: 12,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    justifyContent: "center",
+  },
+  avatarCard: {
+    width: (width - 40 - 24 - 24 - 6) / 4,
+    aspectRatio: 1,
+    backgroundColor: "#0a0e27",
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    borderRadius: 2,
+    padding: 4,
+    position: "relative",
+  },
+  avatarCardSelected: {
+    borderColor: "#ffd700",
+    borderWidth: 3,
+    shadowColor: "#ffd700",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  avatarCardInner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+  avatarImageUnselected: {
+    opacity: 0.5,
+  },
+  selectedBadge: {
+    position: "absolute",
+    top: -6,
+    right: -6,
+    width: 20,
+    height: 20,
+    backgroundColor: "#4caf50",
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedBadgeText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 12,
+    color: "#fff",
+  },
+  buttonSection: {
+    gap: 12,
+  },
+  primaryButton: {
+    borderRadius: 2,
+    shadowColor: "#ffd700",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  buttonGradient: {
+    borderRadius: 2,
+    borderWidth: 3,
+    borderColor: "#000",
+  },
+  buttonInner: {
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 0,
+    borderWidth: 2,
+    borderColor: "#ffffff44",
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+  },
+  primaryButtonText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 20,
+    color: "#0a0e27",
+    textAlign: "center",
+    letterSpacing: 2,
+    textShadowColor: "#ffffff66",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0,
+  },
+  secondaryButton: {
+    backgroundColor: "#3d5a80",
+    borderRadius: 2,
+    borderWidth: 3,
+    borderColor: "#98c1d9",
+    shadowColor: "#3d5a80",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  secondaryButtonInner: {
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 0,
+    borderWidth: 2,
+    borderColor: "#ffffff22",
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+  },
+  secondaryButtonText: {
+    fontFamily: "Pixel-Bold",
+    fontSize: 18,
+    color: "#fff",
+    textAlign: "center",
+    letterSpacing: 2,
   },
 });

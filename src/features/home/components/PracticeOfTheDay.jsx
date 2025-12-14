@@ -23,24 +23,8 @@ export default function PracticeOfTheDay() {
   };
   return (
     <View style={styles.card}>
-      <Image
-        source={PracticeIcon}
-        style={{
-          width: "100%",
-          height: IMAGE_HEIGHT,
-          resizeMode: "cover",
-        }}
-      />
-
       {/* OVERLAY */}
-      <View
-        style={{
-          position: "absolute",
-          top: 10,
-          left: 10,
-          right: 10,
-        }}
-      >
+      <View>
         <Text style={styles.sectionTitle}>Practice of The Day</Text>
 
         <Text style={styles.cardSub}>{practiceOfDayMock.question}</Text>
@@ -84,9 +68,10 @@ export default function PracticeOfTheDay() {
         <View
           style={{
             width: "100%",
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "space-between",
             marginTop: 10,
+            gap: 10,
           }}
         >
           <TouchableOpacity

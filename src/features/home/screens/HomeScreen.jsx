@@ -32,7 +32,7 @@ export default function HomeScreen() {
   const openLifeModal = () => setShowAlert(true);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#0a0e27" }}>
       <AppBar />
       <ScrollView
         style={styles.container}

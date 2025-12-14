@@ -73,28 +73,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
-  unitHeader: {
-    backgroundColor: "#020617",
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  unitBack: {
-    color: "white",
-    fontSize: 4,
-  },
-  unitTitle: {
-    color: "white",
-    fontSize: 30,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  unitSubtitle: {
-    color: "white",
-    fontSize: 16,
-  },
+  
   guideButton: {
     backgroundColor: "#d8b4fe",
     borderRadius: 16,
@@ -135,7 +114,7 @@ const styles = StyleSheet.create({
   levelContainer: {
     width: "100%",
     gap: 8,
-    // marginVertical: 20,
+    marginBottom: 40,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",

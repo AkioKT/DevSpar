@@ -17,11 +17,7 @@ export default function ProgressOverview() {
 
   return (
     <View style={styles.card}>
-      <Image
-        source={ProgressIcon}
-        style={{ width: "100%", height: 300, opacity: 0.8 }}
-      />
-      <View style={{ position: "absolute", width: "100%", padding: 10 }}>
+      <View>
         <Text style={styles.sectionTitle}>Progress Overview</Text>
         <View
           style={{

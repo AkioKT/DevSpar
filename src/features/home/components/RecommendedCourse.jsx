@@ -17,57 +17,41 @@ export default function RecommendedCourses() {
   ];
   return (
     <View style={styles.card}>
-      <Image source={RecommendedIcon} style={{ width: "100%", height: 200 }} />
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          // justifyContent: "center",
-          // alignItems: "center",
-          zIndex: 1,
-          padding: 10,
-          // backgroundColor: "red",
-        }}
-      >
-        <Text style={styles.sectionTitle}>Recommended Course</Text>
+      <Text style={styles.sectionTitle}>Recommended Course</Text>
 
-        <FlatList
-          horizontal
-          data={recommendedMock}
-          keyExtractor={(i) => i.id}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.courseCard}
-              onPress={() =>
-                navigation.navigate("MainTabs", { screen: "Learn" })
-              }
+      <FlatList
+        horizontal
+        data={recommendedMock}
+        keyExtractor={(i) => i.id}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.courseCard}
+            onPress={() => navigation.navigate("MainTabs", { screen: "Learn" })}
+          >
+            <Text
+              style={styles.courseTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
-              <Text
-                style={styles.courseTitle}
-                numberOfLines={1}
-                ellipsizeMode="tail"
+              {item.title}
+            </Text>
+            <Text style={styles.courseLevel}>{item.level}</Text>
+            <View style={styles.progressBarBg}>
+              <View
+                style={[
+                  styles.progressBarFill,
+                  { width: `${item.progress * 100}%` },
+                ]}
               >
-                {item.title}
-              </Text>
-              <Text style={styles.courseLevel}>{item.level}</Text>
-              <View style={styles.progressBarBg}>
-                <View
-                  style={[
-                    styles.progressBarFill,
-                    { width: `${item.progress * 100}%` },
-                  ]}
-                >
-                  {[...Array(20)].map((_, i) => (
-                    <View key={i} style={styles.stripe} />
-                  ))}
-                </View>
+                {[...Array(20)].map((_, i) => (
+                  <View key={i} style={styles.stripe} />
+                ))}
               </View>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 }

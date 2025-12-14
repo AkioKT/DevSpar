@@ -4,109 +4,125 @@ import {
   Text,
   ScrollView,
   StatusBar,
-  StyleSheet,
+  Image,
   TouchableOpacity,
+  Pressable,
+  useWindowDimensions,
 } from "react-native";
 import { Svg, Polyline, Path } from "react-native-svg";
 import { useFonts } from "expo-font";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../../../style/LevelStyle";
+import { useCallback } from "react";
+import styles from "../../../style/AllCategoryStyle";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LivesContext } from "../../../context/LivesContext";
+import { useContext } from "react";
+import { ProgressContext } from "../../../context/ProgressOverview";
+import BackgroundHTML from "../../../../assets/image/thumbnail_html.png";
+import ComingSoon from "../components/ComingSoon";
+import HeaderLevel from "../components/HeaderLevel";
 
 export default function CssLevel() {
+  const COURSE_KEY = "CSS";
+  const STORAGE_KEY = `levels_${COURSE_KEY}`;
+  const { width } = useWindowDimensions();
+  const levelSize = Math.min(80, (width - 10 * 2 - 20 * 4) / 4);
+  const { updateProgress } = useContext(ProgressContext);
+  const navigation = useNavigation();
   const [levels, setLevels] = useState([
-    { id: 1, completed: false },
-    { id: 2, completed: false },
-    { id: 3, completed: false },
-    { id: 4, completed: false },
-    { id: 5, completed: false },
-    { id: 6, completed: false },
-    { id: 7, completed: false },
-    { id: 8, completed: false },
-    { id: 9, completed: false },
-    { id: 10, completed: false },
+    { id: 1, completed: false, locked: false }, // level 1 terbuka
+    { id: 2, completed: false, locked: true },
+    { id: 3, completed: false, locked: true },
+    { id: 4, completed: false, locked: true },
+    { id: 5, completed: false, locked: true },
+    { id: 6, completed: false, locked: true },
+    { id: 7, completed: false, locked: true },
+    { id: 8, completed: false, locked: true },
+    { id: 9, completed: false, locked: true },
+    { id: 10, completed: false, locked: true },
   ]);
-  useEffect(() => {
-    const loadLevels = async () => {
-      try {
-        const storedLevels = await AsyncStorage.getItem("levels");
-        if (storedLevels) {
-          setLevels(JSON.parse(storedLevels));
+  const { lives } = useContext(LivesContext);
+  useFocusEffect(
+    useCallback(() => {
+      const loadLevels = async () => {
+        try {
+          const storedLevels = await AsyncStorage.getItem(STORAGE_KEY);
+          if (storedLevels) {
+            setLevels(JSON.parse(storedLevels));
+          }
+        } catch (error) {
+          console.log("Error loading levels:", error);
         }
-      } catch (error) {
-        console.log("Error loading levels:", error);
-      }
-    };
-    loadLevels();
-  }, []);
+      };
+      loadLevels();
+    }, [])
+  );
 
   // 🔹 Simpan data ke AsyncStorage
   const saveLevels = async (newLevels) => {
     try {
-      await AsyncStorage.setItem("levels", JSON.stringify(newLevels));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newLevels));
     } catch (error) {
       console.log("Error saving levels:", error);
     }
   };
-
   // 🔹 Fungsi menandai level selesai
   const completeLevel = (levelId) => {
-    const newLevels = levels.map((level) =>
-      level.id === levelId ? { ...level, completed: true } : level
-    );
+    const newLevels = levels.map((level) => {
+      if (level.id === levelId) return { ...level, completed: true };
+      if (level.id === levelId + 1) return { ...level, locked: false };
+      return level;
+    });
+
     setLevels(newLevels);
-    saveLevels(newLevels); // simpan ke AsyncStorage
+    saveLevels(newLevels);
+
+    // ✅ Hitung Progress HTML
+    const completedCount = newLevels.filter((l) => l.completed).length;
+    const total = newLevels.length;
+    const percent = completedCount / total;
+
+    updateProgress("CSS", percent);
   };
 
-  const navigation = useNavigation(); // ⬅️ Ambil objek navigation tanpa props
-  const backPage = () => {
-    navigation.navigate("SelectCategory");
-  };
+  const handleLevelPress = (levelId) => {
+    const level = levels.find((l) => l.id === levelId);
 
-  // const [activeTab, setActiveTab] = useState("HTML");
+    if (level.locked) {
+      alert("Selesaikan level sebelumnya dulu!");
+      return;
+    }
+
+    navigation.navigate("NavigationCSS", {
+      screen: "LearningCSS",
+      params: {
+        levelId,
+        onFinish: () => completeLevel(levelId),
+      },
+    });
+  };
 
   const [fontsLoaded] = useFonts({
     "Poppins-Regular": require("../../../../assets/fonts/Poppins-Regular.ttf"),
   });
-
   if (!fontsLoaded) {
     return null; // atau tampilkan splash/loading
   }
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
+      <Image
+        source={BackgroundHTML}
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          opacity: 0.2,
+        }}
+      />
       {/* Unit Header */}
-      <View style={styles.unitHeader}>
-        <View>
-          <TouchableOpacity>
-            <Ionicons
-              name="chevron-back"
-              size={28}
-              color="#fff"
-              onPress={backPage}
-            />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Text style={styles.unitTitle}>CSS</Text>
-          <Text style={styles.unitSubtitle}>Ask for directions</Text>
-        </View>
-        <View style={styles.guideButton}>
-          <View style={styles.guideIcon}>
-            <View style={styles.guideGrid}>
-              <View style={styles.guideRow}>
-                <View style={styles.guideDot} />
-                <View style={styles.guideDot} />
-              </View>
-              <View style={styles.guideRow}>
-                <View style={styles.guideDot} />
-                <View style={styles.guideDot} />
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-
+      <HeaderLevel title="CSS" />
       {/* Progress Path */}
       <ScrollView
         style={styles.scrollView}
@@ -115,12 +131,22 @@ export default function CssLevel() {
         {/* Completed Level */}
         <View style={styles.levelContainer}>
           {levels.map((level) => (
-            <TouchableOpacity
+            <Pressable
               key={level.id}
-              style={styles.levelBox}
-              onPress={() => completeLevel(level.id)}
+              onPress={() => !level.locked && handleLevelPress(level.id)}
+              style={({ pressed }) => [
+                styles.levelBox,
+                {
+                  width: levelSize,
+                  height: levelSize,
+                  backgroundColor: level.locked ? "#25283d" : "#facc15",
+                  opacity: pressed && !level.locked ? 0.7 : 1,
+                },
+              ]}
             >
-              {level.completed ? (
+              {level.locked ? (
+                <Ionicons name="lock-closed" size={24} color="#585e6b" />
+              ) : level.completed ? (
                 <Svg width="40" height="40" viewBox="0 0 24 24">
                   <Polyline
                     points="20 6 9 17 4 12"
@@ -132,44 +158,12 @@ export default function CssLevel() {
               ) : (
                 <Text style={styles.levelText}>{level.id}</Text>
               )}
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
+        {/* Coming Soon Section */}
+        <ComingSoon />
       </ScrollView>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <View style={styles.navItem}>
-          <View style={styles.homeIcon}>
-            <View style={styles.homeIconInner} />
-          </View>
-        </View>
-
-        <View style={[styles.navItem, styles.navItemInactive]}>
-          <Text style={styles.navEmoji}>🎧</Text>
-        </View>
-
-        <View style={[styles.navItem, styles.navItemInactive]}>
-          <Text style={styles.navEmoji}>💪</Text>
-        </View>
-
-        <View style={[styles.navItem, styles.navItemInactive]}>
-          <Text style={styles.navEmoji}>🏆</Text>
-        </View>
-
-        <View style={[styles.navItem, styles.navItemInactive]}>
-          <Text style={styles.navEmoji}>🛡️</Text>
-          <View style={styles.notificationDot} />
-        </View>
-
-        <View style={[styles.navItem, styles.navItemInactive]}>
-          <View style={styles.menuDots}>
-            <View style={styles.menuDot} />
-            <View style={styles.menuDot} />
-            <View style={styles.menuDot} />
-          </View>
-        </View>
-      </View>
     </View>
   );
 }

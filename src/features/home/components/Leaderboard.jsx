@@ -13,39 +13,18 @@ export default function Leaderboard() {
   ];
   return (
     <View style={styles.card}>
-      <Image
-        source={LeaderboardIcon}
-        style={{ width: "100%", height: 400, resizeMode: "cover" }}
-      />
-      <View
-        style={{
-          position: "absolute",
-          width: 260,
-          paddingHorizontal: 12,
-          height: 250,
-          justifyContent: "center",
-        }}
-      >
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={styles.sectionTitle}>Leaderboard</Text>
-        </View>
-        {leaderboardMock.map((u, idx) => (
-          <View key={u.id} style={styles.row}>
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <Text style={styles.leaderIdx}>{idx + 1}</Text>
-              <Text style={styles.leaderName}>{u.name}</Text>
-            </View>
-            <View>
-              <Text style={styles.leaderXp}>{u.xp} XP</Text>
-            </View>
+      <Text style={styles.sectionTitle}>Leaderboard</Text>
+      {leaderboardMock.map((u, idx) => (
+        <View key={u.id} style={styles.row}>
+          <View style={{flexDirection: "row", gap: 10, }}>
+            <Text style={styles.leaderIdx}>{idx + 1}</Text>
+            <Text style={styles.leaderName}>{u.name}</Text>
           </View>
-        ))}
-      </View>
+          <View>
+            <Text style={styles.leaderXp}>{u.xp} XP</Text>
+          </View>
+        </View>
+      ))}
     </View>
   );
 }

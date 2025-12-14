@@ -4,14 +4,13 @@ const SCALE = width / 380; // responsive scale
 
 export default StyleSheet.create({
   card: {
-    backgroundColor: "#0f1724",
-    borderRadius: 12,
-    marginBottom: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#1f2937",
-    overflow: "hidden",
+    backgroundColor: "#1a1f3a",
+    position: "relative",
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
   },
   sectionTitle: {
     color: "#fff",
@@ -21,6 +20,7 @@ export default StyleSheet.create({
     textShadowColor: "#000", // warna stroke
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
+    alignSelf: "center",
   },
   row: {
     flexDirection: "row",
@@ -45,6 +45,7 @@ export default StyleSheet.create({
     textShadowColor: "#000", // warna stroke
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
+    alignSelf: "center",
   },
   leaderXp: {
     color: "#57f149",

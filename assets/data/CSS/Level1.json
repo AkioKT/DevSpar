@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "text": "Apa kepanjangan dari CSS?",
+    "questionText": "What does 'CSS' stand for?",
+    "options": [
+      { "id": 1, "text": "Computer Style Sheets" },
+      { "id": 2, "text": "Creative Style System" },
+      { "id": 3, "text": "Cascading Style Sheets" },
+      { "id": 4, "text": "Colorful Style Sheets" }
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 2,
+    "text": "CSS digunakan untuk apa?",
+    "questionText": "What is CSS used for?",
+    "options": [
+      { "id": 1, "text": "Membuat struktur halaman web" },
+      { "id": 2, "text": "Mengatur tampilan dan gaya halaman web" },
+      { "id": 3, "text": "Mengelola database" },
+      { "id": 4, "text": "Menjalankan logika program" }
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 3,
+    "text": "Properti CSS apa yang digunakan untuk mengubah warna teks?",
+    "questionText": "Which CSS property is used to change text color?",
+    "options": [
+      { "id": 1, "text": "font-color" },
+      { "id": 2, "text": "text-color" },
+      { "id": 3, "text": "color" },
+      { "id": 4, "text": "background-color" }
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 4,
+    "text": "Simbol apa yang digunakan untuk selector class di CSS?",
+    "questionText": "Which symbol is used for class selector in CSS?",
+    "options": [
+      { "id": 1, "text": "#" },
+      { "id": 2, "text": "." },
+      { "id": 3, "text": "*" },
+      { "id": 4, "text": "&" }
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 5,
+    "text": "Properti CSS untuk mengatur jarak di dalam elemen adalah?",
+    "questionText": "Which CSS property controls the space inside an element?",
+    "options": [
+      { "id": 1, "text": "margin" },
+      { "id": 2, "text": "padding" },
+      { "id": 3, "text": "border" },
+      { "id": 4, "text": "spacing" }
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 6,
+    "text": "Properti CSS apa yang digunakan untuk mengatur ukuran teks?",
+    "questionText": "Which CSS property is used to set text size?",
+    "options": [
+      { "id": 1, "text": "text-size" },
+      { "id": 2, "text": "font-style" },
+      { "id": 3, "text": "font-size" },
+      { "id": 4, "text": "size" }
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 7,
+    "text": "Display mana yang membuat elemen berada dalam satu baris?",
+    "questionText": "Which display value makes elements stay in one line?",
+    "options": [
+      { "id": 1, "text": "block" },
+      { "id": 2, "text": "inline" },
+      { "id": 3, "text": "flex" },
+      { "id": 4, "text": "grid" }
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 8,
+    "text": "Properti CSS untuk mengatur latar belakang adalah?",
+    "questionText": "Which CSS property sets the background?",
+    "options": [
+      { "id": 1, "text": "bg-color" },
+      { "id": 2, "text": "background" },
+      { "id": 3, "text": "color" },
+      { "id": 4, "text": "style" }
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 9,
+    "text": "Selector CSS apa yang digunakan untuk memilih elemen dengan id?",
+    "questionText": "Which CSS selector is used to select an element with id?",
+    "options": [
+      { "id": 1, "text": "." },
+      { "id": 2, "text": "*" },
+      { "id": 3, "text": "#" },
+      { "id": 4, "text": "&" }
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 10,
+    "text": "Properti CSS untuk mengatur posisi elemen adalah?",
+    "questionText": "Which CSS property is used to position elements?",
+    "options": [
+      { "id": 1, "text": "layout" },
+      { "id": 2, "text": "display" },
+      { "id": 3, "text": "position" },
+      { "id": 4, "text": "float" }
+    ],
+    "correctAnswer": 3
+  }
+]

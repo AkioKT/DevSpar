@@ -4,12 +4,13 @@ const SCALE = width / 400; // responsive scale
 
 const styles = StyleSheet.create({
   weeklyChallengeCard: {
-    borderRadius: 12,
-    width: "100%",
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#1f2937",
-    overflow: "hidden",
+    backgroundColor: "#1a1f3a",
+    position: "relative",
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
   },
 
   sectionTitle: {

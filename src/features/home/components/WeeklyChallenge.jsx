@@ -18,12 +18,8 @@ export default function WeeklyChallenge() {
       onPress={() => Alert.alert("Weekly Challenge", weeklyChallengeMock.title)}
       activeOpacity={0.8}
     >
-      <Image
-        source={WeeklyChallengeIcon}
-        style={{ width: "100%", height: 120 }}
-      ></Image>
       {/* CONTENT */}
-      <View style={{ width: 300, position: "absolute", top: 10, left: 10 }}>
+      <View>
         <Text style={styles.sectionTitle}>Weekly Challenge</Text>
         <View style={{ gap: 6 }}>
           <Text style={styles.cardSub}>{weeklyChallengeMock.title}</Text>

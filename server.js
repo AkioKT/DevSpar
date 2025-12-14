@@ -113,17 +113,27 @@ io.on("connection", (socket) => {
     const room = rooms[roomId];
     if (!room) return;
 
+    // hanya host yang bisa mulai
     if (socket.id !== room.host) {
       socket.emit("error_msg", "Only host can start");
       return;
     }
 
+    // CEK: minimal 2 pemain
+    const playerCount = room.players.size;
+    if (playerCount === 1) {
+      socket.emit("error_msg", "Pemain kurang dari 2!");
+      return;
+    }
+
+    // CEK: semua pemain harus ready
     const allReady = [...room.players.values()].every((p) => p.ready === true);
     if (!allReady) {
       socket.emit("error_msg", "Semua pemain harus ready!");
       return;
     }
 
+    // mulai battle 3 detik lagi
     room.state = "starting";
     const startTime = Date.now() + 3000;
     room.startTime = startTime;
@@ -242,9 +252,9 @@ function emitQuestion(roomId) {
     index: idx,
   });
   // auto move to next question after 10s (room auto-advance)
-  room.currentQuestionTimeout = setTimeout(() => {
-    moveToNextQuestion(roomId);
-  }, 10000);
+  // room.currentQuestionTimeout = setTimeout(() => {
+  //   moveToNextQuestion(roomId);
+  // }, 10000);
 }
 
 function moveToNextQuestion(roomId) {

@@ -61,10 +61,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 16,
     elevation: 3,
-    backgroundColor: "#0F172A",
+    backgroundColor: "#1a1f3a",
     borderWidth: 2,
     borderBottomWidth: 5,
-    borderColor: "#475569",
+    borderColor: "#3d5a80",
     borderStyle: "solid",
   },
   cardHeader: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     borderBottomWidth: 2,
-    borderColor: "#475569",
+    borderColor: "#3d5a80",
     overflow: "hidden",
   },
   cardImage: {
@@ -87,20 +87,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#2d3853a3",
   },
   cardTitle: {
-    fontFamily: "Poppins-Regular",
-    fontSize: 24,
+    fontFamily: "Pixel-Bold",
+    fontSize: 30,
     color: "#F8FAFC",
   },
-  cardCode: { fontSize: 16, color: "#F8FAFC", fontFamily: "Poppins-Regular" },
+  cardCode: { fontSize: 18, color: "#F8FAFC", fontFamily: "Pixel-Bold" },
   cardDesc: {
     width: "100%",
     color: "#9ca5b3",
     fontSize: 14,
-    fontFamily: "Poppins-Regular",
+    fontFamily: "Pixel-Bold",
   },
   selectButton: {
     width: "100%",
-    backgroundColor: "#facc15", // biru
+    backgroundColor: "#facc15",
     paddingVertical: 8,
     borderRadius: 4,
     alignItems: "center",
@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
   },
   selectText: {
     color: "#282103",
-    fontFamily: "Poppins-Bold",
-    fontSize: 16,
+    fontFamily: "Pixel-Bold",
+    fontSize: 20,
   },
 });
 

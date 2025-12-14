@@ -19,14 +19,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LivesContext } from "../../../context/LivesContext";
 import { useContext } from "react";
 import { ProgressContext } from "../../../context/ProgressOverview";
-import LifeTimer from "../../../componentsglobal/LifeTimer";
 import BackgroundHTML from "../../../../assets/image/thumbnail_html.png";
+import ComingSoon from "../components/ComingSoon";
+import HeaderLevel from "../components/HeaderLevel";
 
 export default function HtmlLevel() {
+  const COURSE_KEY = "HTML";
+  const STORAGE_KEY = `levels_${COURSE_KEY}`;
   const { width } = useWindowDimensions();
   const levelSize = Math.min(80, (width - 10 * 2 - 20 * 4) / 4);
   const { updateProgress } = useContext(ProgressContext);
-  const navigation = useNavigation(); // ⬅️ Ambil objek navigation tanpa props
+  const navigation = useNavigation();
   const [levels, setLevels] = useState([
     { id: 1, completed: false, locked: false }, // level 1 terbuka
     { id: 2, completed: false, locked: true },
@@ -44,7 +47,7 @@ export default function HtmlLevel() {
     useCallback(() => {
       const loadLevels = async () => {
         try {
-          const storedLevels = await AsyncStorage.getItem("levels");
+          const storedLevels = await AsyncStorage.getItem(STORAGE_KEY);
           if (storedLevels) {
             setLevels(JSON.parse(storedLevels));
           }
@@ -59,7 +62,7 @@ export default function HtmlLevel() {
   // 🔹 Simpan data ke AsyncStorage
   const saveLevels = async (newLevels) => {
     try {
-      await AsyncStorage.setItem("levels", JSON.stringify(newLevels));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newLevels));
     } catch (error) {
       console.log("Error saving levels:", error);
     }
@@ -100,12 +103,6 @@ export default function HtmlLevel() {
     });
   };
 
-  const backPage = () => {
-    navigation.navigate("MainTabs", {
-      screen: "Learn",
-    });
-  };
-
   const [fontsLoaded] = useFonts({
     "Poppins-Regular": require("../../../../assets/fonts/Poppins-Regular.ttf"),
   });
@@ -125,25 +122,7 @@ export default function HtmlLevel() {
         }}
       />
       {/* Unit Header */}
-      <View style={styles.unitHeader}>
-        <View style={styles.unitSubHeader}>
-          <TouchableOpacity>
-            <Ionicons
-              name="chevron-back"
-              size={28}
-              color="#fff"
-              onPress={backPage}
-            />
-          </TouchableOpacity>
-          <View>
-            <Text style={styles.unitTitle}>HTML</Text>
-          </View>
-        </View>
-        <View style={styles.livesContainer}>
-          <LifeTimer />
-        </View>
-      </View>
-
+      <HeaderLevel title="HTML" />
       {/* Progress Path */}
       <ScrollView
         style={styles.scrollView}
@@ -154,15 +133,19 @@ export default function HtmlLevel() {
           {levels.map((level) => (
             <Pressable
               key={level.id}
-              onPress={() => handleLevelPress(level.id)}
+              onPress={() => !level.locked && handleLevelPress(level.id)}
               style={({ pressed }) => [
                 styles.levelBox,
-                pressed && styles.levelPressed,
-                { width: levelSize, height: levelSize },
+                {
+                  width: levelSize,
+                  height: levelSize,
+                  backgroundColor: level.locked ? "#25283d" : "#facc15",
+                  opacity: pressed && !level.locked ? 0.7 : 1,
+                },
               ]}
             >
               {level.locked ? (
-                <Ionicons name="lock-closed" size={24} color="#171717" />
+                <Ionicons name="lock-closed" size={24} color="#585e6b" />
               ) : level.completed ? (
                 <Svg width="40" height="40" viewBox="0 0 24 24">
                   <Polyline
@@ -178,6 +161,8 @@ export default function HtmlLevel() {
             </Pressable>
           ))}
         </View>
+        {/* Coming Soon Section */}
+        <ComingSoon />
       </ScrollView>
     </View>
   );

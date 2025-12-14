@@ -4,12 +4,13 @@ const SCALE = width / 400; // responsive scale
 
 export default StyleSheet.create({
   card: {
-    backgroundColor: "#0f1724",
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#1f2937",
-    overflow: "hidden",
+    backgroundColor: "#1a1f3a",
+    position: "relative",
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
   },
   sectionTitle: {
     color: "#fff",
@@ -36,7 +37,7 @@ export default StyleSheet.create({
   progressBarBg: {
     width: "100%",
     height: 25,
-    backgroundColor: "#63331b", // coklat seperti gambar
+    backgroundColor: "#0b12208f", // coklat seperti gambar
     borderRadius: 6,
     overflow: "hidden",
   },

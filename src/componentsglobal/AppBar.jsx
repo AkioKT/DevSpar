@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import LifeTimer from "./LifeTimer";
 
@@ -7,10 +8,11 @@ const AppBar = () => {
   // const [lives, setLives] = useState(3);
   return (
     <View style={[styles.appBar, { fontFamily: "Poppins-Thin" }]}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleApp}>CodeCrack</Text>
-      </View>
-      <LifeTimer/>
+      <TouchableOpacity>
+        <Ionicons name="person-circle-outline" size={38} color="#fff" />
+      </TouchableOpacity>
+      <Text style={styles.titleApp}>DevSpar</Text>
+      <LifeTimer />
     </View>
   );
 };
@@ -42,14 +44,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   titleContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 6,
+    // width: 200,
   },
   titleApp: {
     color: "#fff",
-    fontSize: 20,
-    fontFamily: "Poppins-Regular",
+    fontSize: 26,
+    fontFamily: "Pixel-Bold",
+    alignSelf: "center",
   },
 });
 

@@ -3,81 +3,330 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#f3f3f3",
+    backgroundColor: "#0a0e27",
+    padding: 20,
+    // alignItems: "center",
+    // justifyContent: "center",
+  },
+  floatingDecorations: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    zIndex: 0,
+  },
+  floatingIcon: {
+    position: "absolute",
+    color: "#ffd70033",
+    fontSize: 18,
+    fontFamily: "Pixel-Bold",
+    textShadowColor: "#ffd70066",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 50,
+    paddingBottom: 40,
   },
 
-  // Header
-  headerContainer: {
+  // Avatar Section
+  avatarSection: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 32,
+  },
+  avatarFrame: {
+    width: 140,
+    height: 140,
+    position: "relative",
+    marginBottom: 16,
+  },
+  starTopLeft: {
+    position: "absolute",
+    top: -10,
+    left: -10,
+    zIndex: 10,
+  },
+  starBottomRight: {
+    position: "absolute",
+    bottom: -10,
+    right: -10,
+    zIndex: 10,
+  },
+  starIcon: {
+    fontSize: 24,
+    color: "#ffd700",
+    textShadowColor: "#ffd700",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  avatarImageContainer: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 3,
+    borderColor: "#c400ff",
+    shadowColor: "#c400ff",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 30,
+    elevation: 45,
   },
   profileImage: {
-    width: 110,
-    height: 110,
-    borderRadius: 80,
-    backgroundColor: "#ccc",
+    width: 150,
+    height: 150,
+    
   },
-  nameInput: {
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    width: 180,
+  avatarBackground: {
+    width: "100",
+    height: "100",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  playerNameLabel: {
+    fontFamily: "monospace",
+    fontSize: 12,
+    color: "#00f0ff",
+    letterSpacing: 2,
+    marginBottom: 8,
+    fontWeight: "bold",
+  },
+  usernameInputWrapper: {
+    width: "100%",
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    borderRadius: 8,
+    backgroundColor: "rgba(0, 240, 255, 0.05)",
+    shadowColor: "#3d5a80",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    // elevation: 8,
+  },
+  usernameInput: {
+    fontFamily: "monospace",
+    fontSize: 16,
+    color: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    fontWeight: "bold",
+  },
+
+  // Neon Card
+  neonCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    borderWidth: 2,
+    borderRadius: 14,
     padding: 10,
-    borderRadius: 10,
+    marginBottom: 24,
+    // shadowOffset: { width: 0, height: 0 },
+    // shadowOpacity: 0.6,
+    // shadowRadius: 12,
+    // elevation: 10,
+  },
+  cardTitle: {
+    fontFamily: "monospace",
+    fontSize: 14,
+    color: "#00f0ff",
+    letterSpacing: 1,
+    marginBottom: 20,
+    fontWeight: "bold",
     textAlign: "center",
   },
 
-  // Card style
-  card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 20,
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-
-  label: {
-    fontWeight: "600",
-    marginTop: 8,
-  },
-
-  row: {
+  // Settings Row
+  settingRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginVertical: 8,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 240, 255, 0.1)",
+  },
+  settingLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  settingLabel: {
+    fontFamily: "monospace",
+    fontSize: 14,
+    color: "#fff",
+    fontWeight: "600",
   },
 
+  // Toggle Switch
+  toggleContainer: {
+    width: 50,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    padding: 2,
+    justifyContent: "center",
+  },
+  toggleContainerActive: {
+    backgroundColor: "rgba(0, 240, 255, 0.2)",
+    borderColor: "#00f0ff",
+    shadowColor: "#00f0ff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  toggleThumb: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#6b7280",
+  },
+  toggleThumbActive: {
+    backgroundColor: "#00f0ff",
+    alignSelf: "flex-end",
+    shadowColor: "#00f0ff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+
+  // Dropdown
+  dropdownWrapper: {
+    position: "relative",
+    minWidth: 140,
+  },
+  dropdownButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(0, 240, 255, 0.05)",
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    borderRadius: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    gap: 8,
+  },
+  dropdownText: {
+    fontFamily: "monospace",
+    fontSize: 12,
+    color: "#fff",
+    fontWeight: "600",
+  },
+  dropdownMenu: {
+    position: "absolute",
+    top: "100%",
+    right: 0,
+    marginTop: 4,
+    backgroundColor: "#1a1f3a",
+    borderWidth: 2,
+    borderColor: "#3d5a80",
+    borderRadius: 6,
+    minWidth: 140,
+    zIndex: 1000,
+    shadowColor: "#3d5a80",
+    // shadowOffset: { width: 0, height: 0 },
+    // shadowOpacity: 0.6,
+    // shadowRadius: 10,
+    // elevation: 15,
+  },
+  dropdownItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 240, 255, 0.1)",
+  },
+  dropdownItemText: {
+    fontFamily: "monospace",
+    fontSize: 12,
+    color: "#98c1d9",
+    fontWeight: "600",
+  },
+  dropdownItemTextActive: {
+    color: "#00f0ff",
+  },
+
+  // Divider
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 16,
+    gap: 12,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#00f0ff",
+    opacity: 0.3,
+  },
+  dividerDiamond: {
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dividerIcon: {
+    fontSize: 16,
+    color: "#00f0ff",
+    textShadowColor: "#00f0ff",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
+  },
+
+  // History Row
+  historyRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 240, 255, 0.1)",
+  },
+  historyLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  historyLabel: {
+    fontFamily: "monospace",
+    fontSize: 13,
+    color: "#98c1d9",
+    fontWeight: "600",
+  },
+  historyValue: {
+    fontFamily: "monospace",
+    fontSize: 13,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+
+  // Reset Button
   resetButton: {
-    backgroundColor: "#e53935",
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 12,
+    marginTop: 8,
+    borderRadius: 8,
+    overflow: "hidden",
+    shadowColor: "#ff3b3b",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 20,
+    elevation: 15,
   },
-  resetButtonText: {
+  resetGradient: {
+    paddingVertical: 16,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#ff3b3b",
+  },
+  resetText: {
+    fontFamily: "monospace",
+    fontSize: 14,
     color: "#fff",
-    fontSize: 18,
-    textAlign: "center",
     fontWeight: "bold",
-  },
-
-  saveButton: {
-    backgroundColor: "#1e88e5",
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 30,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    textAlign: "center",
-    fontWeight: "bold",
+    letterSpacing: 1,
   },
 });
 

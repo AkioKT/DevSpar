@@ -1,15 +1,4 @@
-/**
- * CodeDex Auth Screen - React Native
- *
- * Installation required:
- * npx expo install expo-linear-gradient
- *
- * For React Native CLI (non-Expo):
- * npm install react-native-linear-gradient
- * cd ios && pod install
- */
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -18,87 +7,76 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import Login from "../src/page/Login";
 import SignUp from "../src/page/SignUp";
-import styles from "./style/LoginStyle";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+
 export default function GetStarted({ navigation }) {
-  const [isLogin, setIsLogin] = useState(true);
-  const highlightPos = useSharedValue(0);
-  const [tabWidth, setTabWidth] = useState(0);
-
-  useEffect(() => {
-    highlightPos.value = withTiming(isLogin ? 0 : 1, { duration: 200 });
-  }, [isLogin]);
-
-  const highlightAnim = useAnimatedStyle(() => ({
-    transform: [{ translateX: highlightPos.value * tabWidth }],
-  }));
+  const [activeTab, setActiveTab] = useState("signin"); // signin or signup
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Toggle Tabs */}
-          <View
-            style={styles.tabContainer}
-            onLayout={(e) => setTabWidth(e.nativeEvent.layout.width / 2)}
-          >
-            <Animated.View style={[styles.slider, highlightAnim]} />
-
+          {/* Tab Navigation */}
+          <View style={styles.tabContainer}>
             <TouchableOpacity
-              onPress={() => setIsLogin(true)}
+              style={[styles.tab, activeTab === "signin" && styles.tabActive]}
+              onPress={() => setActiveTab("signin")}
               activeOpacity={0.8}
-              style={styles.tab}
             >
-              <Text style={[styles.tabText, isLogin && styles.activeText]}>
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === "signin" && styles.tabTextActive,
+                ]}
+              >
                 Sign In
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setIsLogin(false)}
+              style={[styles.tab, activeTab === "signup" && styles.tabActive]}
+              onPress={() => setActiveTab("signup")}
               activeOpacity={0.8}
-              style={styles.tab}
             >
-              <Text style={[styles.tabText, !isLogin && styles.activeText]}>
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === "signup" && styles.tabTextActive,
+                ]}
+              >
                 Sign Up
               </Text>
             </TouchableOpacity>
           </View>
 
-          {/* Header */}
-          <View style={styles.header}>
-            {/* <Text style={styles.emoji}>{isLogin ? "👋" : "🎉"}</Text> */}
-            <Text style={styles.title}>
-              {isLogin ? "Welcome Back!" : "Join CodeCrack"}
+          {/* Welcome Section */}
+          <View style={styles.welcomeSection}>
+            <Text style={styles.welcomeTitle}>
+              {activeTab === "signin" ? "Welcome Back!" : "Join CodeCrack"}
             </Text>
-            <Text style={styles.subtitle}>
-              {isLogin
+            <Text style={styles.welcomeSubtitle}>
+              {activeTab === "signin"
                 ? "Sign in to continue your coding journey"
                 : "Start your coding adventure today!"}
             </Text>
           </View>
 
-          {/* LOGIN FORM */}
-          {isLogin ? (
+          {/* Conditional Rendering: Login or SignUp */}
+          {activeTab === "signin" ? (
             <Login navigation={navigation} />
           ) : (
-            /* SIGN UP FORM */
             <SignUp navigation={navigation} />
           )}
         </ScrollView>
@@ -106,3 +84,81 @@ export default function GetStarted({ navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0a0e27",
+    position: "relative",
+  },
+  keyboardView: {
+    flex: 1,
+  },
+
+  // Corner Decorations
+
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+
+  // Tab Navigation
+  tabContainer: {
+    flexDirection: "row",
+    backgroundColor: "rgba(26, 31, 58, 0.6)",
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 32,
+    borderWidth: 1,
+    borderColor: "rgba(0, 240, 255, 0.2)",
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  tabActive: {
+    backgroundColor: "rgba(0, 240, 255, 0.15)",
+    borderWidth: 1,
+    borderColor: "#00f0ff",
+    shadowColor: "#00f0ff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  tabText: {
+    fontFamily: "monospace",
+    fontSize: 14,
+    color: "#6b7280",
+    fontWeight: "600",
+  },
+  tabTextActive: {
+    color: "#00f0ff",
+    fontWeight: "bold",
+  },
+
+  // Welcome Section
+  welcomeSection: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  welcomeTitle: {
+    fontFamily: "monospace",
+    fontSize: 32,
+    color: "#fff",
+    fontWeight: "bold",
+    marginBottom: 8,
+    textShadowColor: "#00f0ff",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  welcomeSubtitle: {
+    fontFamily: "monospace",
+    fontSize: 13,
+    color: "#98c1d9",
+    textAlign: "center",
+  },
+});

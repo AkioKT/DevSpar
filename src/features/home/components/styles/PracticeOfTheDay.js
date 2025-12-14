@@ -4,13 +4,13 @@ const SCALE = width / 380; // responsive scale
 
 export default StyleSheet.create({
   card: {
-    backgroundColor: "#0f1724",
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#1f2937",
-    overflow: "hidden",
+    backgroundColor: "#1a1f3a",
     position: "relative",
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 3,
+    borderColor: "#3d5a80",
+    borderRadius: 4,
   },
 
   sectionTitle: {
@@ -57,7 +57,7 @@ export default StyleSheet.create({
   primaryBtn: {
     backgroundColor: "#4bdd55ff",
     borderRadius: 4,
-    width: "48%",
+    width: "100%",
     paddingVertical: 8 * SCALE,
     justifyContent: "center",
     alignItems: "center",
@@ -76,7 +76,7 @@ export default StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 4,
-    width: "48%",
+    width: "100%",
     paddingVertical: 8 * SCALE,
     justifyContent: "center",
     alignItems: "center",

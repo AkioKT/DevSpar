@@ -1,32 +1,46 @@
-import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Image
-} from "react-native";
-import styles from '../styles/ProfileScreen'
+import React from "react";
+import { View, TextInput, TouchableOpacity, Image, Text } from "react-native";
+import styles from "../styles/ProfileScreen";
+import DefaultImage from "../../../../assets/image/MyFotoGua.jpg";
 
-export const HeaderProfile = ({ name, setName, image, onPickImage }) => {
+export const HeaderProfile = ({
+  username,
+  setUsername,
+  image, // URI image dari user
+  onPickImage, // function pick image
+}) => {
   return (
-    <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={onPickImage}>
-        <Image
-          source={
-            image
-              ? { uri: image }
-              : require("../../../../assets/image/MascotSad.png")
-          }
-          style={styles.profileImage}
-        />
-      </TouchableOpacity>
+    <View style={styles.avatarSection}>
+      <View style={styles.avatarFrame}>
+        {/* Corner Stars */}
+        <View style={styles.starTopLeft}>
+          <Text style={styles.starIcon}>✦</Text>
+        </View>
+        <View style={styles.starBottomRight}>
+          <Text style={styles.starIcon}>✦</Text>
+        </View>
 
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Enter Name"
-        style={styles.nameInput}
-      />
+        {/* Avatar */}
+        <View style={styles.avatarImageContainer}>
+          <TouchableOpacity onPress={onPickImage}>
+            <Image
+              source={image ? { uri: image } : DefaultImage}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <Text style={styles.playerNameLabel}>PLAYER NAME</Text>
+
+      <View style={styles.usernameInputWrapper}>
+        <TextInput
+          value={username}
+          onChangeText={setUsername}
+          style={styles.usernameInput}
+          textAlign="center"
+        />
+      </View>
     </View>
   );
 };

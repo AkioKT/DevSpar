@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import signupStyles from "../style/SignUpStyle";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
-import styles from "../style/LoginStyle";
-export default function SignUp() {
+
+export default function SignUp({ navigation }) {
   const [name, setName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
@@ -17,16 +23,18 @@ export default function SignUp() {
   };
 
   return (
-    <View style={styles.formCard}>
+    <View style={signupStyles.formCard}>
       {/* Name Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Full Name</Text>
-        <View style={styles.inputWrapper}>
-          <Feather name="user" style={styles.inputIcon}/>
+      <View style={signupStyles.inputContainer}>
+        <Text style={signupStyles.label}>Full Name</Text>
+        <View style={signupStyles.inputWrapper}>
+          <View style={signupStyles.iconContainer}>
+            <Feather name="user" size={20} color="#6b7280" />
+          </View>
           <TextInput
-            style={styles.input}
+            style={signupStyles.input}
             placeholder="Your name"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6b7280"
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
@@ -36,14 +44,16 @@ export default function SignUp() {
       </View>
 
       {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
-        <View style={styles.inputWrapper}>
-          <MaterialIcons name="email" size={22} style={styles.inputIcon} />
+      <View style={signupStyles.inputContainer}>
+        <Text style={signupStyles.label}>Email</Text>
+        <View style={signupStyles.inputWrapper}>
+          <View style={signupStyles.iconContainer}>
+            <MaterialIcons name="email" size={20} color="#6b7280" />
+          </View>
           <TextInput
-            style={styles.input}
+            style={signupStyles.input}
             placeholder="your@email.com"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6b7280"
             value={signupEmail}
             onChangeText={setSignupEmail}
             keyboardType="email-address"
@@ -54,14 +64,16 @@ export default function SignUp() {
       </View>
 
       {/* Password Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
-        <View style={styles.inputWrapper}>
-          <Ionicons name="lock-closed" size={22} style={styles.inputIcon} />
+      <View style={signupStyles.inputContainer}>
+        <Text style={signupStyles.label}>Password</Text>
+        <View style={signupStyles.inputWrapper}>
+          <View style={signupStyles.iconContainer}>
+            <Ionicons name="lock-closed" size={20} color="#6b7280" />
+          </View>
           <TextInput
-            style={styles.input}
+            style={signupStyles.input}
             placeholder="Create a password"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6b7280"
             value={signupPassword}
             onChangeText={setSignupPassword}
             secureTextEntry={!showSignupPassword}
@@ -70,24 +82,29 @@ export default function SignUp() {
           />
           <TouchableOpacity
             onPress={() => setShowSignupPassword(!showSignupPassword)}
-            style={styles.eyeButton}
+            style={signupStyles.eyeButton}
+            activeOpacity={0.7}
           >
-            <Text style={styles.eyeIcon}>
-              {showSignupPassword ? "👁️" : "👁️‍🗨️"}
-            </Text>
+            <Ionicons
+              name={showSignupPassword ? "eye-off" : "eye-off-outline"}
+              size={20}
+              color="#6b7280"
+            />
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Confirm Password Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Confirm Password</Text>
-        <View style={styles.inputWrapper}>
-          <Ionicons name="lock-closed" size={22} style={styles.inputIcon} />
+      <View style={signupStyles.inputContainer}>
+        <Text style={signupStyles.label}>Confirm Password</Text>
+        <View style={signupStyles.inputWrapper}>
+          <View style={signupStyles.iconContainer}>
+            <Ionicons name="lock-closed" size={20} color="#6b7280" />
+          </View>
           <TextInput
-            style={styles.input}
+            style={signupStyles.input}
             placeholder="Confirm your password"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6b7280"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry={!showConfirmPassword}
@@ -96,21 +113,24 @@ export default function SignUp() {
           />
           <TouchableOpacity
             onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            style={styles.eyeButton}
+            style={signupStyles.eyeButton}
+            activeOpacity={0.7}
           >
-            <Text style={styles.eyeIcon}>
-              {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
-            </Text>
+            <Ionicons
+              name={showConfirmPassword ? "eye-off" : "eye-off-outline"}
+              size={20}
+              color="#6b7280"
+            />
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Terms & Conditions */}
-      <View style={styles.termsContainer}>
-        <Text style={styles.termsText}>
+      <View style={signupStyles.termsContainer}>
+        <Text style={signupStyles.termsText}>
           By signing up, you agree to our{" "}
-          <Text style={styles.termsLink}>Terms</Text> and{" "}
-          <Text style={styles.termsLink}>Privacy Policy</Text>
+          <Text style={signupStyles.termsLink}>Terms</Text> and{" "}
+          <Text style={signupStyles.termsLink}>Privacy Policy</Text>
         </Text>
       </View>
 
@@ -118,30 +138,34 @@ export default function SignUp() {
       <TouchableOpacity
         onPress={handleSignUp}
         activeOpacity={0.8}
-        style={styles.buttonWrapper}
+        style={signupStyles.signUpButton}
       >
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Create Account</Text>
-          <Text style={styles.buttonIcon}></Text>
-        </View>
+        <LinearGradient
+          colors={["#ffd700", "#ffed4e"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={signupStyles.signUpGradient}
+        >
+          <Text style={signupStyles.signUpText}>Create Account</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       {/* Divider */}
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>or sign up with</Text>
-        <View style={styles.dividerLine} />
+      <View style={signupStyles.divider}>
+        <View style={signupStyles.dividerLine} />
+        <Text style={signupStyles.dividerText}>or sign up with</Text>
+        <View style={signupStyles.dividerLine} />
       </View>
 
       {/* Social Sign Up */}
-      <View style={styles.socialContainer}>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialIcon}>🔵</Text>
-          <Text style={styles.socialText}>Google</Text>
+      <View style={signupStyles.socialContainer}>
+        <TouchableOpacity style={signupStyles.socialButton} activeOpacity={0.8}>
+          <Text style={signupStyles.socialIcon}>G</Text>
+          <Text style={signupStyles.socialText}>Google</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialIcon}>⚫</Text>
-          <Text style={styles.socialText}>GitHub</Text>
+        <TouchableOpacity style={signupStyles.socialButton} activeOpacity={0.8}>
+          <Text style={signupStyles.socialIcon}>⚫</Text>
+          <Text style={signupStyles.socialText}>GitHub</Text>
         </TouchableOpacity>
       </View>
     </View>

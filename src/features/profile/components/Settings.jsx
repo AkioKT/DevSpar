@@ -1,6 +1,10 @@
 import { View, Text, Switch } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import styles from "../styles/ProfileScreen";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import NeonCard from "./NeonCard";
+import NeonDropdown from "./NeonDropdown";
+import NeonToggle from "./NeonToggle";
 
 export const SettingsPreferences = ({
   theme,
@@ -12,37 +16,64 @@ export const SettingsPreferences = ({
   language,
   setLanguage,
 }) => {
+  
+  const themeOptions = [
+    "Pixel Dark",
+    "Pixel Light",
+    "Neon Cyber",
+    "Retro Blue",
+  ];
+  const languageOptions = ["English"];
+
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>Settings & Preferences</Text>
+      <NeonCard>
+        <Text style={styles.cardTitle}>Settings & Preferences</Text>
 
-      {/* Theme */}
-      <Text style={styles.label}>Theme</Text>
-      <Picker selectedValue={theme} onValueChange={setTheme}>
-        <Picker.Item label="Light" value="light" />
-        <Picker.Item label="Dark" value="dark" />
-      </Picker>
+        {/* Theme */}
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <MaterialCommunityIcons name="palette" size={20} color="#00f0ff" />
+            <Text style={styles.settingLabel}>Theme</Text>
+          </View>
+          <NeonDropdown
+            value={theme}
+            options={themeOptions}
+            onValueChange={setTheme}
+          />
+        </View>
 
-      {/* Sound */}
-      <View style={styles.row}>
-        <Text style={styles.label}>Sound</Text>
-        <Switch value={sound} onValueChange={setSound} />
-      </View>
+        {/* Sound */}
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <Ionicons name="volume-high" size={20} color="#00f0ff" />
+            <Text style={styles.settingLabel}>Sound</Text>
+          </View>
+          <NeonToggle value={sound} onValueChange={setSound} />
+        </View>
 
-      {/* Music */}
-      <View style={styles.row}>
-        <Text style={styles.label}>Music</Text>
-        <Switch value={music} onValueChange={setMusic} />
-      </View>
+        {/* Music */}
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <Ionicons name="musical-notes" size={20} color="#00f0ff" />
+            <Text style={styles.settingLabel}>Music</Text>
+          </View>
+          <NeonToggle value={music} onValueChange={setMusic} />
+        </View>
 
-      {/* Language */}
-      <View style>
-        <Text style={styles.label}>Language</Text>
-        <Picker selectedValue={language} onValueChange={setLanguage}>
-          <Picker.Item label="English" value="en" />
-          <Picker.Item label="Indonesia" value="id" />
-        </Picker>
-      </View>
+        {/* Language */}
+        <View style={[styles.settingRow, { borderBottomWidth: 0 }]}>
+          <View style={styles.settingLeft}>
+            <Ionicons name="globe" size={20} color="#00f0ff" />
+            <Text style={styles.settingLabel}>Language</Text>
+          </View>
+          <NeonDropdown
+            value={language}
+            options={languageOptions}
+            onValueChange={setLanguage}
+          />
+        </View>
+      </NeonCard>
     </View>
   );
 };
